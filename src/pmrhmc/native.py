@@ -29,10 +29,13 @@ def _build_lib():
     if os.path.exists(out):
         return out
     cc = os.environ.get("CC") or sysconfig.get_config_var("CC") or "cc"
-    cmd = cc.split() + ["-O3", "-std=c11", "-fPIC", "-shared", _CSRC, "-o", out, "-lm"]
+    cmd = cc.split() + ["-O3", "-std=gnu11", "-fPIC", "-shared", _CSRC, "-o", out, "-lm"]
     if os.name != "nt":
         cmd.append("-lpthread")
-    subprocess.run(cmd, check=True, capture_output=True)
+    try:
+        subprocess.run(cmd, check=True, capture_output=True, text=True)
+    except subprocess.CalledProcessError as e:  # surface the compiler message
+        raise RuntimeError(f"pmr_kernel build failed:\n{e.stderr}") from e
     return out
 
 

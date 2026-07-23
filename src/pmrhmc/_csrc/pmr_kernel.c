@@ -16,6 +16,10 @@
 #include <string.h>
 #include <stdint.h>
 
+#ifndef M_PI                       /* strict-ISO glibc omits it */
+#define M_PI 3.14159265358979323846
+#endif
+
 #define LOG2PI 1.8378770664093453
 
 /* ----------------------------- RNG (xoshiro256++) ----------------------- */

@@ -1,0 +1,23 @@
+{
+  "logreg": {
+    "reps": 30,
+    "ks_min": 0.0352,
+    "ks_median": 0.5713,
+    "frac_ks_below_05": 0.125,
+    "med_eval_units": 11620
+  },
+  "hier_binom": {
+    "reps": 30,
+    "ks_min": 0.004,
+    "ks_median": 0.3477,
+    "frac_ks_below_05": 0.059,
+    "med_eval_units": 14200
+  },
+  "schools": {
+    "reps": 30,
+    "ks_min": 0.1901,
+    "ks_median": 0.5044,
+    "frac_ks_below_05": 0.0,
+    "med_eval_units": 16894
+  }
+}

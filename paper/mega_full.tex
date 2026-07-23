@@ -1,0 +1,117 @@
+{\small\setlength{\tabcolsep}{5pt}
+\begin{longtable}{llrrrrrl}
+\caption{Complete 102-target parametric suite (4 seeds; medians, PMR
+interquartile range in brackets; err $=$ max standardized mean\,/\,
+log-variance error, PMR then NUTS; verdicts: W win, W$^q$ win by opponent
+quality failure, T tie, L efficiency loss, L$^q$ PMR quality failure, BF
+both fail. \textbf{Bold} rows are accuracy-gated wins.}\label{tab:mega}\\
+\toprule
+target & fam. & $d$ & PMR [IQR] & NUTS & ratio & vd. & err P$\mid$N\\
+\midrule\endfirsthead
+\toprule
+target & fam. & $d$ & PMR [IQR] & NUTS & ratio & vd. & err P$\mid$N\\
+\midrule\endhead
+\textbf{\texttt{mix2\_10\_s4}} & mixture & 10 & \textbf{69.1} [65.8,75.6] & 0.05 & \textbf{1411$\times$} & W$^q$ & 0.03/0.04$\mid$0.43/0.12\\
+\textbf{\texttt{corr40\_r0.95}} & G-corr & 40 & \textbf{286.2} [261.2,296.8] & 0.24 & \textbf{1207$\times$} & W$^q$ & 0.02/0.05$\mid$0.51/0.29\\
+\textbf{\texttt{corr150\_r0.9}} & G-corr & 150 & \textbf{102.6} [78.7,135.9] & 0.13 & \textbf{768$\times$} & W$^q$ & 0.02/0.04$\mid$0.30/0.32\\
+\textbf{\texttt{corr60\_r0.9}} & G-corr & 60 & \textbf{236.6} [220.0,238.8] & 0.32 & \textbf{749$\times$} & W$^q$ & 0.02/0.04$\mid$0.25/0.21\\
+\textbf{\texttt{mix2\_30\_s4}} & mixture & 30 & \textbf{54.7} [53.0,58.6] & 0.08 & \textbf{648$\times$} & W$^q$ & 0.04/0.05$\mid$0.93/0.24\\
+\textbf{\texttt{gauss\_ill20\_k1e+05}} & G-ill & 20 & \textbf{92.7} [90.5,92.9] & 0.15 & \textbf{633$\times$} & W & 0.02/0.04$\mid$0.05/0.10\\
+\textbf{\texttt{corr40\_r0.8}} & G-corr & 40 & \textbf{282.6} [258.5,293.5] & 0.49 & \textbf{581$\times$} & W$^q$ & 0.03/0.05$\mid$0.28/0.13\\
+\textbf{\texttt{banana10\_b0.05}} & banana & 10 & \textbf{81.1} [65.1,94.8] & 0.17 & \textbf{486$\times$} & W & 0.05/0.05$\mid$0.17/0.27\\
+\textbf{\texttt{gauss\_ill80\_k1e+05}} & G-ill & 80 & \textbf{67.5} [57.0,74.4] & 0.16 & \textbf{412$\times$} & W & 0.04/0.06$\mid$0.07/0.11\\
+\textbf{\texttt{corr15\_r0.95}} & G-corr & 15 & \textbf{332.4} [294.9,348.0] & 0.82 & \textbf{406$\times$} & W & 0.02/0.04$\mid$0.18/0.11\\
+\textbf{\texttt{mix3}} & mixture & 10 & \textbf{53.9} [52.1,55.0] & 0.16 & \textbf{330$\times$} & W$^q$ & 0.04/0.04$\mid$0.76/1.12\\
+\textbf{\texttt{corr15\_r0.8}} & G-corr & 15 & \textbf{332.2} [289.5,356.4] & 1.77 & \textbf{188$\times$} & W & 0.02/0.04$\mid$0.06/0.13\\
+\texttt{funnel20} & funnel & 20 & 4.1 [2.3,5.5] & 0.02 & 174$\times$ & BF & 0.19/2.01$\mid$0.34/2.24\\
+\textbf{\texttt{gauss\_ill200\_k1e4}} & G-ill & 200 & \textbf{56.7} [53.4,59.2] & 0.44 & \textbf{130$\times$} & W & 0.04/0.07$\mid$0.08/0.12\\
+\textbf{\texttt{gauss\_ill20\_k1e+03}} & G-ill & 20 & \textbf{217.7} [207.7,222.8] & 1.68 & \textbf{130$\times$} & W & 0.03/0.05$\mid$0.07/0.10\\
+\textbf{\texttt{corr40\_r0.5}} & G-corr & 40 & \textbf{277.3} [250.4,285.2] & 2.33 & \textbf{119$\times$} & W & 0.03/0.05$\mid$0.15/0.09\\
+\texttt{funnel60} & funnel & 60 & 0.5 [0.2,0.8] & 0.01 & 83$\times$ & BF & 1.29/4.58$\mid$0.34/3.10\\
+\textbf{\texttt{gauss\_ill80\_k1e+03}} & G-ill & 80 & \textbf{130.4} [127.0,131.2] & 1.69 & \textbf{77$\times$} & W & 0.04/0.06$\mid$0.05/0.09\\
+\textbf{\texttt{diab\_19}} & diabetes & 12 & \textbf{145.8} [144.5,148.5] & 2.15 & \textbf{68$\times$} & W & 0.05/0.12$\mid$0.05/0.13\\
+\textbf{\texttt{corr15\_r0.5}} & G-corr & 15 & \textbf{330.3} [293.1,357.2] & 5.41 & \textbf{61$\times$} & W & 0.02/0.04$\mid$0.07/0.08\\
+\textbf{\texttt{ring\_R12}} & ring & 20 & \textbf{96.3} [81.5,112.4] & 1.61 & \textbf{60$\times$} & W & 0.04/0.07$\mid$0.04/0.13\\
+\textbf{\texttt{banana10\_b0.2}} & banana & 10 & \textbf{14.9} [11.8,26.8] & 0.38 & \textbf{39$\times$} & W$^q$ & 0.07/0.23$\mid$0.25/1.26\\
+\textbf{\texttt{ring\_R6}} & ring & 20 & \textbf{97.7} [90.6,106.1] & 2.81 & \textbf{35$\times$} & W & 0.05/0.06$\mid$0.05/0.10\\
+\textbf{\texttt{squig\_f4}} & squiggle & 10 & \textbf{6.8} [3.7,9.2] & 0.20 & \textbf{33$\times$} & W & 0.16/0.24$\mid$0.07/0.12\\
+\textbf{\texttt{vilya5}} & BCF & 28 & \textbf{28.3} [18.0,35.5] & 1.04 & \textbf{27$\times$} & W & 0.09/0.18$\mid$0.10/0.15\\
+\textbf{\texttt{rosen4}} & Rosenbr. & 4 & \textbf{13.4} [5.6,20.2] & 0.55 & \textbf{24$\times$} & W & 0.21/0.37$\mid$0.09/0.29\\
+\textbf{\texttt{banana30\_b0.2}} & banana & 30 & \textbf{10.4} [9.1,12.4] & 0.43 & \textbf{24$\times$} & W$^q$ & 0.12/0.36$\mid$0.12/0.70\\
+\textbf{\texttt{squig\_f2}} & squiggle & 10 & \textbf{9.1} [8.1,9.9] & 0.42 & \textbf{22$\times$} & W & 0.11/0.19$\mid$0.08/0.10\\
+\textbf{\texttt{vilya12}} & BCF & 49 & \textbf{11.9} [8.5,15.6] & 0.55 & \textbf{21$\times$} & W & 0.13/0.16$\mid$0.09/0.14\\
+\texttt{funnel8} & funnel & 8 & 3.5 [2.4,8.0] & 0.20 & 18$\times$ & BF & 0.09/1.87$\mid$0.40/0.89\\
+\textbf{\texttt{banana30\_b0.05}} & banana & 30 & \textbf{24.2} [19.5,37.5] & 1.39 & \textbf{17$\times$} & W$^q$ & 0.08/0.14$\mid$0.14/0.80\\
+\texttt{banana10\_b0.1} & banana & 10 & 4.6 [1.3,8.2] & 0.33 & 14$\times$ & BF & 0.19/0.51$\mid$0.30/1.12\\
+\textbf{\texttt{gauss\_iid100}} & G-iid & 100 & \textbf{211.7} [210.9,213.5] & 26.55 & \textbf{7.98$\times$} & W & 0.03/0.06$\mid$0.05/0.15\\
+\textbf{\texttt{gauss\_iid5}} & G-iid & 5 & \textbf{430.8} [422.5,433.4] & 54.66 & \textbf{7.88$\times$} & W & 0.03/0.04$\mid$0.03/0.05\\
+\textbf{\texttt{gph\_30}} & GP-hyp & 3 & \textbf{152.6} [130.1,171.4] & 19.50 & \textbf{7.83$\times$} & W & 0.04/0.10$\mid$0.05/0.07\\
+\textbf{\texttt{logreg10\_12}} & logistic & 11 & \textbf{99.6} [89.2,107.0] & 14.50 & \textbf{6.87$\times$} & W & 0.05/0.08$\mid$0.05/0.09\\
+\texttt{eightsch\_17} & 8-schools & 10 & 1.6 [0.9,2.4] & 0.23 & 6.82$\times$ & L$^q$ & 0.93/0.75$\mid$0.23/0.33\\
+\textbf{\texttt{logreg10\_13}} & logistic & 11 & \textbf{100.7} [99.9,102.8] & 15.87 & \textbf{6.35$\times$} & W & 0.06/0.08$\mid$0.05/0.12\\
+\textbf{\texttt{logreg10\_11}} & logistic & 11 & \textbf{90.3} [79.9,94.6] & 14.98 & \textbf{6.03$\times$} & W & 0.04/0.08$\mid$0.05/0.10\\
+\texttt{banana60\_b0.1} & banana & 60 & 4.1 [2.1,6.0] & 0.69 & 5.97$\times$ & BF & 0.17/0.69$\mid$0.24/1.34\\
+\textbf{\texttt{gauss\_iid20}} & G-iid & 20 & \textbf{354.5} [353.6,355.7] & 68.16 & \textbf{5.20$\times$} & W & 0.03/0.04$\mid$0.04/0.11\\
+\textbf{\texttt{pois40\_26}} & Poisson & 41 & \textbf{119.6} [108.4,126.2] & 25.21 & \textbf{4.74$\times$} & W & 0.08/0.11$\mid$0.07/0.13\\
+\textbf{\texttt{logreg30\_13}} & logistic & 31 & \textbf{54.4} [38.5,68.7] & 12.11 & \textbf{4.49$\times$} & W & 0.08/0.15$\mid$0.06/0.12\\
+\texttt{banana30\_b0.1} & banana & 30 & 3.3 [2.7,5.2] & 0.77 & 4.30$\times$ & BF & 0.17/0.54$\mid$0.11/0.68\\
+\textbf{\texttt{logreg30\_12}} & logistic & 31 & \textbf{47.5} [43.2,54.3] & 11.60 & \textbf{4.09$\times$} & W & 0.07/0.17$\mid$0.06/0.14\\
+\textbf{\texttt{pois10\_24}} & Poisson & 11 & \textbf{159.7} [157.1,166.8] & 39.97 & \textbf{4.00$\times$} & W & 0.04/0.14$\mid$0.04/0.11\\
+\textbf{\texttt{gph\_29}} & GP-hyp & 3 & \textbf{78.0} [75.4,99.3] & 20.26 & \textbf{3.85$\times$} & W & 0.05/0.08$\mid$0.05/0.13\\
+\textbf{\texttt{pois25\_23}} & Poisson & 26 & \textbf{122.8} [107.0,125.9] & 33.22 & \textbf{3.70$\times$} & W & 0.06/0.12$\mid$0.06/0.13\\
+\texttt{funnel40} & funnel & 40 & 0.2 [0.2,0.3] & 0.06 & 3.63$\times$ & BF & 0.18/3.56$\mid$0.22/2.44\\
+\textbf{\texttt{probit30\_34}} & probit & 30 & \textbf{117.0} [103.6,122.0] & 33.00 & \textbf{3.55$\times$} & W & 0.08/0.12$\mid$0.07/0.12\\
+\textbf{\texttt{gauss\_iid300}} & G-iid & 300 & \textbf{103.2} [102.4,103.9] & 29.12 & \textbf{3.54$\times$} & W & 0.04/0.07$\mid$0.04/0.17\\
+\textbf{\texttt{probit\_31}} & probit & 15 & \textbf{155.2} [149.0,158.2] & 43.91 & \textbf{3.53$\times$} & W & 0.05/0.08$\mid$0.05/0.10\\
+\textbf{\texttt{probit30\_35}} & probit & 30 & \textbf{106.6} [96.4,119.9] & 30.21 & \textbf{3.53$\times$} & W & 0.07/0.10$\mid$0.05/0.12\\
+\textbf{\texttt{logreg30\_11}} & logistic & 31 & \textbf{43.3} [37.3,44.9] & 12.43 & \textbf{3.48$\times$} & W & 0.07/0.11$\mid$0.06/0.12\\
+\textbf{\texttt{probit\_32}} & probit & 15 & \textbf{138.5} [121.2,158.5] & 39.85 & \textbf{3.47$\times$} & W & 0.05/0.10$\mid$0.05/0.14\\
+\textbf{\texttt{probit30\_36}} & probit & 30 & \textbf{117.2} [114.7,123.4] & 34.12 & \textbf{3.44$\times$} & W & 0.08/0.12$\mid$0.06/0.12\\
+\textbf{\texttt{pois10\_23}} & Poisson & 11 & \textbf{139.8} [121.4,158.9] & 40.92 & \textbf{3.42$\times$} & W & 0.04/0.09$\mid$0.04/0.09\\
+\textbf{\texttt{horse5}} & horseshoe & 12 & \textbf{39.3} [30.0,47.0] & 11.64 & \textbf{3.37$\times$} & W & 0.07/0.14$\mid$0.04/0.15\\
+\textbf{\texttt{probit\_33}} & probit & 15 & \textbf{130.9} [125.6,136.0] & 40.42 & \textbf{3.24$\times$} & W & 0.06/0.09$\mid$0.05/0.11\\
+\textbf{\texttt{t10\_nu10}} & t & 10 & \textbf{150.3} [147.1,152.4] & 51.10 & \textbf{2.94$\times$} & W & 0.03/0.06$\mid$0.03/0.12\\
+\texttt{hgauss60} & hier-G & 63 & 0.1 [0.1,0.2] & 0.03 & 2.80$\times$ & BF & 14.80/3.48$\mid$6.31/3.98\\
+\textbf{\texttt{hbinom25}} & hier-B & 27 & \textbf{73.5} [57.8,84.7] & 26.96 & \textbf{2.73$\times$} & W & 0.07/0.15$\mid$0.06/0.17\\
+\texttt{t10\_nu2.5} & t & 10 & 101.0 [93.4,114.3] & 37.28 & 2.71$\times$ & BF & 0.03/0.63$\mid$0.03/0.79\\
+\textbf{\texttt{t10\_nu5}} & t & 10 & \textbf{124.4} [117.8,133.1] & 47.14 & \textbf{2.64$\times$} & W & 0.04/0.09$\mid$0.03/0.12\\
+\textbf{\texttt{logreg50\_15}} & logistic & 51 & \textbf{28.9} [24.7,33.3] & 11.05 & \textbf{2.61$\times$} & W & 0.10/0.16$\mid$0.07/0.15\\
+\textbf{\texttt{negbin\_37}} & negbin & 13 & \textbf{157.4} [154.5,175.1] & 61.09 & \textbf{2.58$\times$} & W & 0.05/0.09$\mid$0.04/0.09\\
+\textbf{\texttt{pois25\_24}} & Poisson & 26 & \textbf{103.2} [82.9,135.2] & 40.09 & \textbf{2.57$\times$} & W & 0.06/0.13$\mid$0.06/0.13\\
+\textbf{\texttt{cauchyreg15\_44}} & Cauchy-r & 16 & \textbf{79.8} [68.5,83.9] & 32.01 & \textbf{2.49$\times$} & W & 0.06/0.09$\mid$0.07/0.10\\
+\textbf{\texttt{cauchyreg\_42}} & Cauchy-r & 9 & \textbf{113.5} [98.8,124.6] & 46.12 & \textbf{2.46$\times$} & W & 0.07/0.08$\mid$0.04/0.10\\
+\textbf{\texttt{negbin25\_39}} & negbin & 26 & \textbf{102.2} [91.4,115.4] & 42.84 & \textbf{2.39$\times$} & W & 0.08/0.14$\mid$0.06/0.11\\
+\textbf{\texttt{pois40\_25}} & Poisson & 41 & \textbf{73.3} [42.8,99.3] & 30.88 & \textbf{2.37$\times$} & W & 0.08/0.17$\mid$0.06/0.14\\
+\textbf{\texttt{cauchyreg15\_43}} & Cauchy-r & 16 & \textbf{76.2} [70.0,81.0] & 33.21 & \textbf{2.29$\times$} & W & 0.06/0.09$\mid$0.05/0.09\\
+\textbf{\texttt{negbin\_38}} & negbin & 13 & \textbf{144.0} [135.5,151.3] & 63.18 & \textbf{2.28$\times$} & W & 0.04/0.09$\mid$0.03/0.08\\
+\textbf{\texttt{t30\_nu10}} & t & 30 & \textbf{74.0} [65.6,77.7] & 33.74 & \textbf{2.19$\times$} & W & 0.05/0.15$\mid$0.04/0.13\\
+\textbf{\texttt{logreg50\_16}} & logistic & 51 & \textbf{23.5} [14.6,31.1] & 10.79 & \textbf{2.18$\times$} & W & 0.12/0.19$\mid$0.06/0.15\\
+\textbf{\texttt{mix2\_w0.9}} & mixture & 10 & \textbf{122.1} [112.5,132.6] & 59.26 & \textbf{2.06$\times$} & W$^q$ & 0.04/0.09$\mid$0.32/2.65\\
+\texttt{t30\_nu2.5} & t & 30 & 56.0 [50.7,62.6] & 29.10 & 1.92$\times$ & BF & 0.06/0.65$\mid$0.02/0.94\\
+\textbf{\texttt{cauchyreg\_41}} & Cauchy-r & 9 & \textbf{97.8} [95.1,105.5] & 51.55 & \textbf{1.90$\times$} & W & 0.06/0.10$\mid$0.04/0.09\\
+\textbf{\texttt{t30\_nu5}} & t & 30 & \textbf{63.1} [60.2,65.5] & 34.60 & \textbf{1.82$\times$} & W & 0.05/0.20$\mid$0.04/0.21\\
+\textbf{\texttt{negbin25\_40}} & negbin & 26 & \textbf{72.0} [66.4,88.3] & 39.59 & \textbf{1.82$\times$} & W & 0.05/0.12$\mid$0.06/0.14\\
+\textbf{\texttt{logcosh10}} & lcosh & 10 & \textbf{59.2} [51.1,67.9] & 35.04 & \textbf{1.69$\times$} & W & 0.05/0.13$\mid$0.05/0.14\\
+\texttt{hgauss100} & hier-G & 103 & 0.0 [0.0,0.0] & 0.03 & 1.62$\times$ & BF & 30.29/4.39$\mid$2.51/2.95\\
+\texttt{t60\_nu4} & t & 60 & 36.5 [24.2,45.8] & 25.78 & 1.42$\times$ & T & 0.08/0.39$\mid$0.04/0.30\\
+\textbf{\texttt{mix2\_10\_s8}} & mixture & 10 & \textbf{69.9} [65.9,76.9] & 62.67 & \textbf{1.12$\times$} & W$^q$ & 0.03/0.04$\mid$0.65/3.96\\
+\texttt{hbinom75} & hier-B & 77 & 22.4 [18.3,27.1] & 20.46 & 1.09$\times$ & T & 0.10/0.22$\mid$0.07/0.18\\
+\textbf{\texttt{mix2\_w0.5}} & mixture & 10 & \textbf{66.9} [66.4,70.7] & 63.81 & \textbf{1.05$\times$} & W$^q$ & 0.03/0.04$\mid$0.98/3.55\\
+\texttt{skew\_a2} & skew & 15 & 53.2 [43.6,62.0] & 51.73 & 1.03$\times$ & T & 0.08/0.12$\mid$0.05/0.13\\
+\textbf{\texttt{mix2\_30\_s8}} & mixture & 30 & \textbf{53.8} [50.1,59.6] & 55.09 & \textbf{0.98$\times$} & W$^q$ & 0.04/0.05$\mid$0.65/3.97\\
+\texttt{logreg50\_14} & logistic & 51 & 10.0 [9.4,11.3] & 11.33 & 0.88$\times$ & T & 0.14/0.20$\mid$0.08/0.16\\
+\texttt{hg43\_18} & hier-G & 43 & 0.1 [0.0,0.1] & 0.07 & 0.81$\times$ & BF & 2.62/2.83$\mid$1.15/1.20\\
+\texttt{breast\_21} & breast & 31 & 2.7 [1.8,3.7] & 3.75 & 0.73$\times$ & T & 0.20/0.36$\mid$0.06/0.14\\
+\texttt{rosen10} & Rosenbr. & 10 & 0.2 [0.1,3.3] & 0.26 & 0.71$\times$ & BF & 0.65/4.26$\mid$0.17/0.59\\
+\texttt{shell} & shell & 20 & 2.7 [1.6,4.0] & 3.95 & 0.69$\times$ & T & 0.20/0.28$\mid$0.04/0.11\\
+\texttt{hgauss20} & hier-G & 23 & 0.1 [0.1,0.4] & 0.22 & 0.65$\times$ & BF & 0.94/1.75$\mid$0.39/0.43\\
+\texttt{ring\_R20} & ring & 30 & 0.5 [0.1,18.2] & 1.15 & 0.46$\times$ & L$^q$ & 0.90/1.57$\mid$0.04/0.15\\
+\texttt{rosen16} & Rosenbr. & 16 & 0.1 [0.1,59.9] & 0.21 & 0.41$\times$ & L$^q$ & 1.02/5.93$\mid$0.16/0.41\\
+\texttt{hbinom120} & hier-B & 122 & 9.1 [6.7,11.2] & 23.30 & 0.39$\times$ & L & 0.14/0.25$\mid$0.07/0.18\\
+\texttt{logcosh25} & lcosh & 25 & 6.8 [3.6,9.6] & 20.82 & 0.33$\times$ & L$^q$ & 0.21/0.58$\mid$0.05/0.19\\
+\texttt{skew\_a6} & skew & 15 & 0.8 [0.5,1.4] & 12.60 & 0.06$\times$ & L$^q$ & 0.35/0.68$\mid$0.07/0.18\\
+\texttt{skew40\_a3} & skew & 40 & 0.8 [0.7,1.9] & 19.00 & 0.04$\times$ & L$^q$ & 0.34/0.71$\mid$0.09/0.19\\
+\texttt{horse25} & horseshoe & 52 & 0.0 [0.0,0.0] & 1.43 & 0.02$\times$ & L$^q$ & 3.31/7.47$\mid$0.14/0.36\\
+\texttt{horse15} & horseshoe & 32 & 0.0 [0.0,0.2] & 3.64 & 0.01$\times$ & L$^q$ & 1.23/1.47$\mid$0.07/0.17\\
+\bottomrule
+\end{longtable}}

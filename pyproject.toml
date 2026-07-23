@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pmrhmc"
+version = "0.1.0"
+description = "PMR-HMC: learned transport atlases for exact, gradient-free production MCMC (one density evaluation per transition, C production kernel)"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+authors = [{ name = "Bhum Soonjun" }]
+dependencies = ["numpy>=1.24", "scipy>=1.10"]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pmrhmc"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/pmrhmc", "tests", "README.md", "LICENSE"]

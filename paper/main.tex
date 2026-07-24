@@ -1547,31 +1547,54 @@ gated-best method: 3 on posteriordb and 18 on mega-30. None is
 mysterious; each traces to one of four mechanisms, tabulated in
 Table~\ref{tab:failures} with the diagnosed root cause.
 
-\emph{(A) Representation: a chart class is missing.} The shell target
+Each mechanism claim below was tested by a dedicated probe
+(Figure~\ref{fig:failures}): production acceptance measured on every
+failing row, the triangular-chart fitter run on warm-up-style pool
+draws \emph{versus} gate-passing reference draws, and the residual
+spread $\operatorname{sd}(R)$ evaluated on reference draws under the
+fitted atlas. The probes corrected two of our initial hypotheses,
+noted below.
+
+\emph{(A) Representation or detection: the atlas family cannot
+express, or its detector cannot find, the structure.} The shell target
 loses to MCLMC ($3.6$ vs.\ $8.1$) because the polar chart unwraps a
 \emph{planar} ring; a $d$-sphere shell concentrates on a norm level
-set and needs a radial chart that does not yet exist. The extreme-bend
-banana ($b{=}0.2$, $d{=}30$; no method passes) exceeds what composed
-pairwise quadratic shears express at this budget.
+set and would need a radial chart (predicted fix, not yet tested). The
+extreme-bend banana ($b{=}0.2$, $d{=}30$; no method passes) is a
+measured expressiveness deficit: the fitted atlas leaves
+$\operatorname{sd}(R)=1.07$ nats on reference draws versus $0.52$ on
+the easy banana it wins---and its acceptance is \emph{healthy}
+($0.48$), the signature of a chain that moves well inside a reference
+that misses curvature. The horseshoe belongs here too, which we
+learned from the probe: the triangular chart's log-square driver scan
+finds \emph{no} driver even when handed $3{,}000$ gate-passing
+reference draws (while firing spuriously on pool draws)---a
+\emph{detector} gap, not a data gap, and our initial
+acquisition-only explanation was wrong.
 
-\emph{(B) Acquisition: the chart class exists, but warm-up data never
-exposes the structure it must fit.} This is the dominant failure
-mechanism. The horseshoe's triangular chart requires per-coordinate
-scale (local-shrinkage) variation for its driver scan to fire, and the
-L-BFGS-anchored pool sits near the mode where none is visible; the
-$\alpha{=}6$ skew target's triangular chart \emph{is} admitted, but
-forward-KL responsibilities concentrate on the co-located Gaussian
-components and the fit, made from near-degenerate importance weights,
-is poor (production acceptance $0.02$). Deep hierarchies
-(\texttt{hgauss60}: $15\sigma$ median error), both funnels, and
-eight-schools fail the same way at growing dimension, and the
-Rosenbrock valley is the purest case: the shear \emph{fitter} recovers
-the correct chart when handed oracle valley data, but warm-up
-exploration never collects such data (the success-history DE explorer
-ablation returned null, Section~\ref{sec:negative}). In every
-acquisition-class failure we measured, production acceptance collapses
-($\le0.06$, versus $\ge0.4$ on winning rows)---a deployment-observable
-symptom requiring no reference draws.
+\emph{(B) Acquisition: the chart class and detector work, but warm-up
+data never exposes the structure.} The $\alpha{=}6$ skew target is the
+proven case: the same fitter recovers strong skew
+($\varepsilon=0.74$) from reference draws but only $\varepsilon=0.38$
+from the warm-up pool, and the admitted chart is starved of
+forward-KL responsibility by the co-located Gaussian components
+(acceptance $0.027$). Deep hierarchies (\texttt{hgauss60}:
+$15\sigma$ median error, acceptance $0.03$) fail the same way, and
+the Rosenbrock valley is the purest instance: the shear fitter
+recovers the correct chart when handed oracle valley data, but
+warm-up exploration never collects such data (the success-history DE
+explorer ablation returned null, Section~\ref{sec:negative}). The
+funnels and eight-schools sit between (B) and the budget ceiling,
+with degraded (not collapsed) acceptance $0.09$--$0.24$.
+
+The acceptance probe (Figure~\ref{fig:failures}a) separates three
+deployment-observable signatures, none requiring reference draws:
+acquisition failures \emph{collapse} ($0.008$--$0.03$ versus
+$\ge0.88$ on wins), budget-limited rows degrade ($0.09$--$0.24$), and
+representation failures keep healthy acceptance while the chain
+samples a subtly wrong law---the one signature that instead requires
+the cross-seed rank-$\widehat R$ diagnostic, which catches both such
+cases on posteriordb ($1.11$, $1.26$).
 
 \emph{(C) No-advantage regime: the geometry is already easy for
 gradient samplers.} On hand-noncentered eight-schools (posteriordb),
@@ -1591,37 +1614,60 @@ Student-$t$ the population variance barely exists and every method
 fails the variance gate, a limit of the gate itself as much as of any
 sampler.
 
-The remedies map one-to-one: (A) a radial chart and richer shear
-elements; (B) visited-state refits and population-based acquisition
-(Section~\ref{sec:lim}); (C) is inherent---the correct reading is that
-PMR-HMC's advantage is a function of how much structure the posterior
-has for an atlas to remove; (D) is shared by all methods.
+The remedies map one-to-one: (A) a radial chart, richer shear
+elements, and---for the horseshoe---a shrinkage-aware driver detector
+(the inverse-KL triangular objective of Section~\ref{sec:lim}
+subsumes the current scan); (B) visited-state refits and
+population-based acquisition (Section~\ref{sec:lim}); (C) is
+inherent---the correct reading is that PMR-HMC's advantage is a
+function of how much structure the posterior has for an atlas to
+remove; (D) is shared by all methods.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{failures.pdf}
+\caption{Failure-analysis probes. (a) Production acceptance separates
+three failure signatures: acquisition failures collapse
+($0.008$--$0.03$), budget-limited rows degrade ($0.09$--$0.24$),
+representation failures keep healthy acceptance ($0.29$--$0.48$)
+while sampling a subtly wrong law; wins sit at $0.88$--$1.0$.
+(b) The $\alpha{=}6$ skew miss: PMR draws (blue) versus reference
+(gray)---the admitted triangular chart is starved and under-corrects
+the skew. (c) The $d{=}60$ hierarchical Gaussian: the chain never
+tracks the scale--child coupling. (d) The extreme-bend banana's
+measured expressiveness deficit: residual spread on reference draws
+doubles relative to the winning easy-banana row.}
+\label{fig:failures}
+\end{figure}
 
 \begin{table}[t]
-\caption{Every non-win row, diagnosed. Class: A $=$ missing chart
-class, B $=$ warm-up acquisition, C $=$ no-advantage regime
-(gate-passing efficiency loss), D $=$ reference-limited. ``none'' $=$
-no method passes the gate on that row.}
+\caption{Every non-win row, diagnosed; the acc.\ column is the
+measured production acceptance from the verification probe. Class: A
+$=$ missing chart class \emph{or} detector, B $=$ warm-up
+acquisition, C $=$ no-advantage regime (gate-passing efficiency
+loss), D $=$ reference-limited. ``none'' $=$ no method passes the
+gate on that row.}
 \label{tab:failures}
 \centering\footnotesize
 \setlength{\tabcolsep}{4pt}
-\begin{tabular}{llll}
+\begin{tabular}{lllll}
 \toprule
-row(s) & winner & class & diagnosed cause\\
+row(s) & winner & class & acc. & diagnosed cause (probe-verified)\\
 \midrule
-shell & MCLMC & A & polar chart is planar; needs radial chart\\
-banana $b{=}0.2$, $d{=}30$ & none & A & bend exceeds composed-shear family at budget\\
-horseshoe ($d{=}15$) & MCLMC & B & pool lacks shrinkage variation; driver scan silent\\
-skew $\alpha{=}6$ & MCLMC & B & tri chart starved by Gaussian responsibilities\\
-hgauss60, funnels, 8-schools & none/NUTS & B & scale-coupling unexposed at budget; acc $\le0.06$\\
-Rosenbrock $d{=}10$ & none & B & valley data never acquired (fitter itself correct)\\
-GLM rows ($\times6$) & MCLMC & C & near-Gaussian after rescaling; $1.1$--$6.6\times$\\
-eight-schools NC (pdb) & MCLMC & C & hand-noncentered; atlas has nothing to remove\\
-production BCF $d{=}49$ & dNUTS & C & dense mass captures campaign-block covariance\\
-squiggle $f{=}4$ & TESS & C & dead heat ($15.3$ vs $15.3$), tie by rounding\\
-earn\_height & dNUTS & D & heteroscedastic raw-scale tail; $\widehat R\,1.11$\\
-kilpisjarvi & dNUTS & D & all methods $\le0.6$; $\widehat R\,1.26$\\
-Student-$t$ $\nu{=}2.5$ & none & D & variance gate unattainable for every sampler\\
+shell & MCLMC & A & .29 & polar chart is planar; radial chart is the predicted fix\\
+banana $b{=}0.2$, $d{=}30$ & none & A & .48 & expressiveness: $\operatorname{sd}(R)$ $1.07$ vs $0.52$ nats on the win\\
+horseshoe ($d{=}15$) & MCLMC & A & .008 & driver scan finds nothing even on reference draws\\
+skew $\alpha{=}6$ & MCLMC & B & .027 & fitter recovers $\varepsilon{=}0.74$ from reference, $0.38$ from pool\\
+hgauss60 & none & B & .03 & scale coupling unexposed; $15\sigma$ error\\
+funnels, 8-schools & none/NUTS & B & .09--.24 & degraded at budget; between (B) and the $d$ ceiling\\
+Rosenbrock $d{=}10$ & none & B & .14 & valley data never acquired (fitter itself correct)\\
+GLM rows ($\times6$) & MCLMC & C & --- & near-Gaussian after rescaling; $1.1$--$6.6\times$\\
+eight-schools NC (pdb) & MCLMC & C & --- & hand-noncentered; atlas has nothing to remove\\
+production BCF $d{=}49$ & dNUTS & C & --- & dense mass suffices (hypothesis, not probed)\\
+squiggle $f{=}4$ & TESS & C & --- & dead heat ($15.3$ vs $15.3$), tie by rounding\\
+earn\_height & dNUTS & D & --- & heteroscedastic raw-scale tail; $\widehat R\,1.11$\\
+kilpisjarvi & dNUTS & D & --- & all methods $\le0.6$; $\widehat R\,1.26$\\
+Student-$t$ $\nu{=}2.5$ & none & D & --- & variance gate unattainable for every sampler\\
 \bottomrule
 \end{tabular}
 \end{table}

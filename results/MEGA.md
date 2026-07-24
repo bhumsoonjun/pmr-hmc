@@ -1,3 +1,5 @@
+> **SUPERSEDED.** This is the historical 102-target PMR-vs-NUTS run from an earlier code version; its PMR cells predate the final sampler and are NOT reproducible from results/raw. The current canonical tables (all ten methods, final code) are in PROPER.md and in the paper.
+
 # Mega suite — full results (102 targets, 4 seeds, medians)
 
 | target | family | d | pmr ess/ku [IQR] | nuts | ratio | verdict | pmr err | nuts err |

@@ -88,7 +88,12 @@ the two disclosed accuracy failures); a curated 30-target controlled
 stress panel that deliberately retains every known failure family
 localizes where the method wins and loses, with every accuracy failure
 attributable to a named missing chart class or warm-up budget and the
-efficiency losses concentrated on smooth, well-scaled targets. A native C production
+efficiency losses concentrated on smooth, well-scaled targets. A
+production boundary study localizes the failure of any single global
+map at $d\approx600$ via a measured per-coordinate fidelity law, and a
+delayed-rejection hybrid restores gate-passing quality there at
+$2$--$5\times$ the speed of the production NUTS baseline (single-seed
+prototype). A native C production
 kernel attains $0.13$--$385\,\mu$s per draw; end-to-end wall clock
 crosses over in PMR-HMC's favor beyond a median budget of
 $\approx4{,}500$ effective samples.
@@ -1672,6 +1677,146 @@ Student-$t$ $\nu{=}2.5$ & none & D & --- & variance gate unattainable for every 
 \end{tabular}
 \end{table}
 
+\subsection{A production boundary study and a delayed-rejection
+remedy}\label{sec:boundary}
+The warm-up ceiling of Section~\ref{sec:vilya} was measured on
+synthetic feature frames. To locate the boundary on real data we
+ported a deployed hierarchical zero-inflated negative-binomial
+advertising model---two-stage control function, per-campaign
+hierarchy, Hill spend saturation---faithfully to the real feature
+frame of the largest production shop in the fleet (``shop W''): 41
+campaigns, $7{,}135$ rows, $d{=}618$ unconstrained parameters. The
+production baseline, nutpie NUTS at $1{,}000$ tuning $+$ $1{,}500$
+draws $\times$ 4 chains and target acceptance $0.95$, takes
+$1{,}304$\,s of wall clock for min-ESS $365$ with zero divergences,
+spending a mean $347.9$ leapfrog steps per draw at mean tree depth
+$7.8$---versus $52$ steps per draw for the same model on a synthetic
+frame: the real data sharpen the posterior geometry by roughly
+$7\times$. Raw PMR-HMC fails completely here: local acceptance
+$0.004$, the atlas collapsed to $K{=}1$, mean errors of $9\sigma$.
+The failure is geometric rather than dimensional---on a $d{=}189$
+synthetic version of the model the same warm-up had already failed at
+acceptance $0.003$.
+
+To identify \emph{which} structure is missing, we fitted a capacity
+ladder of reference families, every rung from properly adapted
+oracle-quality NUTS draws ($800$ draws, min-ESS $96$)---so warm-up
+acquisition is removed from the experiment entirely---and scored each
+by $\operatorname{sd}(R)$, $R=U+\log q$, on held-out draws
+(Table~\ref{tab:ladder}). A block-diagonal Gaussian along the model's
+per-campaign structure leaves $28.4$ nats; adding tied sinh-arcsinh
+marginal warps (shapes pooled across the 41 exchangeable campaign
+blocks) \emph{worsens} the held-out residual to $29.3$, so marginal
+non-Gaussianity is not the obstruction; an arrow-structured
+conditional Gaussian following the model's own graph (campaign blocks
+conditioned on the globals) reaches $23.0$; a full shrunk covariance
+$18.7$; full covariance plus tied marginal warps $16.5$. Roughly
+$16$ nats of \emph{nonlinear} cross-coordinate dependence---copula
+structure---remain after the marginal and every linear dependence
+hypothesis have been falsified.
+
+\begin{table}[t]
+\caption{The capacity ladder on shop W ($d{=}618$). Every reference
+family is fitted from oracle-quality NUTS draws ($800$ draws, min-ESS
+$96$) and scored by the spread of the residual $R=U+\log q$ on
+held-out draws; smaller is better, and acceptance requires order
+$1$--$3$ nats in total.}
+\label{tab:ladder}
+\centering\small
+\begin{tabular}{lr}
+\toprule
+reference family & $\operatorname{sd}(R)$ [nats]\\
+\midrule
+block-diagonal Gaussian (per-campaign $13$-dim blocks $+$ globals) & $28.4$\\
+\quad$+$ tied sinh-arcsinh marginal warps (pooled shapes) & $29.3$\\
+arrow-structured conditional Gaussian (blocks $\mid$ globals) & $23.0$\\
+full shrunk covariance & $18.7$\\
+full covariance $+$ tied marginal warps & $16.5$\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The number matters because of how residual spread converts to
+acceptance (Proposition~\ref{prop:accept}): acceptance requires a
+total residual of order $1$--$3$ nats, and residual error adds across
+coordinates, so a sampler built on any single global map needs
+per-coordinate fidelity of order $1/d$. The measured per-coordinate
+error here is
+\begin{equation}
+\varepsilon_{\mathrm{coord}}
+\;=\;\frac{16.5}{618}
+\;=\;0.027\ \text{nats},
+\qquad
+d\times\varepsilon_{\mathrm{coord}}
+\;\approx\;16.5\ \text{nats}
+\;\gg\;\text{a few nats},
+\label{eq:fidelity}
+\end{equation}
+excellent per coordinate and fatal in aggregate. This fidelity
+law---$d$ times per-coordinate residual error must not exceed a few
+nats---precisely delimits the method's competence region, and
+explains with the same numbers both the posteriordb dominance at
+$d\le60$ and the failure at $d{=}618$.
+
+The remedy follows from the diagnosis: keep the one-density-call
+economics where the atlas is right, and fall back to gradients
+\emph{inside the same exact kernel} where it is wrong. We prototyped
+a delayed-rejection hybrid \citep{green2001,modi2023}: each
+transition first attempts the chart move of Algorithm~\ref{alg:prod}
+at one density call; on rejection, a second stage proposes a
+preconditioned leapfrog trajectory with the atlas covariance as mass
+matrix, accepted with the Green--Mira two-stage ratio
+\begin{equation}
+\alpha_2
+\;=\;1\wedge
+\frac{e^{-H_2(y,p_y)}\,\bigl(1-\alpha_1^{\mathrm{ghost}}(y)\bigr)}
+     {e^{-H_2(x,p_x)}\,\bigl(1-\alpha_1(x)\bigr)},
+\label{eq:dr}
+\end{equation}
+where $H_2$ is the preconditioned Hamiltonian, $\alpha_1(x)$ the
+realized stage-one acceptance probability, and
+$\alpha_1^{\mathrm{ghost}}(y)$ the acceptance probability of a
+freshly sampled ghost stage-one attempt launched from the stage-two
+endpoint; because the stage-one auxiliaries (momentum, rotation
+angle) are position-independent, sampling the ghost attempt is
+legitimate and the composed kernel is exact. The stage-two step size
+is dual-averaged to a target acceptance of $0.65$ ($192$ leapfrog
+steps here).
+
+We label the result as what it is---a single-seed prototype, not a
+benchmark. On shop W every transition escalates (escalation rate
+$1.0$: the atlas is wrong everywhere, exactly as the ladder
+predicts), stage-two acceptance is $0.758$, and $3{,}000$ draws yield
+min-ESS $506$ with a maximum mean gap of $0.17$ standard deviations
+against the nutpie reference. Production wall clock is $328$\,s with
+the gradient warm-up pilot amortized (e.g.\ reusing the previous
+retrain's draws, the natural production pattern) and $824$\,s cold
+including an $800$-draw pilot: $648$\,s per $10^3$ ESS warm and
+$1{,}627$ cold, versus $3{,}571$ for the production nutpie
+configuration---$5.5\times$ and $2.2\times$. On an easy target
+(banana, $d{=}20$) with its regular multi-chart atlas, the same
+kernel takes the chart move on $58\%$ of transitions and reaches
+min-ESS $1{,}270$ in $3.7$\,s total.
+
+The design point is the failure mode: the hybrid is exact everywhere,
+inherits the one-density-call-per-draw economics wherever the atlas
+is right, and \emph{degrades into} a preconditioned gradient sampler,
+rather than failing, wherever it is wrong---rejection itself acting
+as a free, oracle-free detector of atlas failure. The same rejection
+signal is the natural trigger for refining the caches of
+Section~\ref{sec:surrogate} online, in the spirit of the
+refinement-triggered local approximations of \citet{conrad2016},
+though refinement remains frozen here (Section~\ref{sec:lim}). The
+insurance is not free on easy targets: the banana's $42\%$
+escalations cost $\approx19$ target-oracle units per draw against
+$\approx1$ for the pure kernel. Multi-seed validation, a true
+dynamic-trajectory second stage, and integration into the released
+library are left as engineering; the general lesson is broader than
+this model---every transport-, flow-, or VI-referenced sampler obeys
+the same additive fidelity law \eqref{eq:fidelity}, and delayed
+rejection is the principled composition of any such reference with
+gradient methods.
+
 \subsection{Wall clock: native kernel, both regimes}\label{sec:native}
 A $\sim$700-line C kernel consumes the frozen atlas (all chart classes,
 both cache types, winding-branch and Gamma-auxiliary sampling) at
@@ -1727,8 +1872,15 @@ eight-schools). (2) Products of coupled funnels (horseshoe priors)
 defeat the current warm-up: the triangular chart could express them,
 but the pool never exhibits the per-coordinate scale variation its
 driver scan needs. (3) Warm-up has a
-dimension ceiling near $d\approx400$ under fixed budgets;
-block-structured atlas construction is the natural remedy. (4) Valley
+dimension ceiling near $d\approx400$ under fixed budgets; the
+boundary study of Section~\ref{sec:boundary} sharpens this from a
+budget limit into a fidelity law---residual error adds across
+coordinates, so any single global map needs per-coordinate error of
+order $1/d$---and shows that block-structured construction alone
+cannot fix it (the measured residual is dominated by nonlinear
+cross-coordinate dependence); the delayed-rejection hybrid of that
+section is the demonstrated remedy at $d{=}618$, so far on a single
+seed. (4) Valley
 data acquisition (Rosenbrock-class) is solved at the chart level but not
 yet at the warm-up-exploration level. (5) The warm-up gradient bill is
 $\Theta(\sqrt\kappa)$, paid once. (6) ODE, HMM, and latent-GP posterior
@@ -1810,6 +1962,11 @@ Software}, 76(1), 2017.
 \bibitem[Christen and Fox(2005)]{christen2005} J. Christen and C. Fox.
 MCMC using an approximation. \emph{Journal of Computational and
 Graphical Statistics}, 14:795--810, 2005.
+\bibitem[Conrad et al.(2016)]{conrad2016} P. Conrad, Y. Marzouk,
+N. Pillai, and A. Smith. Accelerating asymptotically exact MCMC for
+computationally intensive models via local approximations.
+\emph{Journal of the American Statistical Association},
+111(516):1591--1607, 2016.
 \bibitem[Deb et al.(2002)]{deb2002} K. Deb, A. Pratap, S. Agarwal, and
 T. Meyarivan. A fast and elitist multiobjective genetic algorithm:
 NSGA-II. \emph{IEEE Transactions on Evolutionary Computation},
@@ -1825,6 +1982,9 @@ flows. \emph{Proceedings of the National Academy of Sciences}, 119(10),
 B. Calderhead. Riemann manifold Langevin and Hamiltonian Monte Carlo
 methods. \emph{Journal of the Royal Statistical Society B},
 73:123--214, 2011.
+\bibitem[Green and Mira(2001)]{green2001} P. Green and A. Mira.
+Delayed rejection in reversible jump Metropolis--Hastings.
+\emph{Biometrika}, 88(4):1035--1053, 2001.
 \bibitem[Hansen and Ostermeier(2001)]{hansen2001} N. Hansen and
 A. Ostermeier. Completely derandomized self-adaptation in evolution
 strategies. \emph{Evolutionary Computation}, 9:159--195, 2001.
@@ -1876,6 +2036,9 @@ introduction. In \emph{Handbook of Uncertainty Quantification}, 2016.
 \bibitem[Mengersen and Tweedie(1996)]{mengersen1996} K. Mengersen and
 R. Tweedie. Rates of convergence of the Hastings and Metropolis
 algorithms. \emph{Annals of Statistics}, 24:101--121, 1996.
+\bibitem[Modi et al.(2023)]{modi2023} C. Modi, A. Barnett, and
+B. Carpenter. Delayed rejection Hamiltonian Monte Carlo for sampling
+multiscale distributions. \emph{Bayesian Analysis}, 2023.
 \bibitem[Neal(2003)]{neal2003} R. Neal. Slice sampling. \emph{Annals of
 Statistics}, 31:705--767, 2003.
 \bibitem[Neal(2011)]{neal2011} R. Neal. MCMC using Hamiltonian

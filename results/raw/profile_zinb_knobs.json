@@ -1,0 +1,12 @@
+{
+ "ta085": {
+  "total_s": 121.0,
+  "n_steps_mean": 31.0,
+  "divergences": 0
+ },
+ "lowrank": {
+  "total_s": 256.0,
+  "n_steps_mean": 65.9,
+  "divergences": 0
+ }
+}

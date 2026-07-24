@@ -1,0 +1,14 @@
+{
+ "rows": 1800,
+ "n_camps": 20,
+ "d_free_vars": 726,
+ "build_s": 0.1,
+ "compile_s": 1.5,
+ "sample_s": 31.3,
+ "total_s": 32.9,
+ "divergences": 0,
+ "n_steps_mean": 41.9,
+ "n_steps_sum": 125704,
+ "depth_mean": 5.2,
+ "depth_sum": 15488
+}

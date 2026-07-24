@@ -1,0 +1,13 @@
+{
+ "m_funnel20": 0.24,
+ "m_funnel60": 0.105,
+ "m_hgauss60": 0.03,
+ "m_rosen10": 0.144,
+ "m_banana30_b0.2": 0.483,
+ "m_eightsch_17": 0.094,
+ "m_skew_a6": 0.027,
+ "m_horse15": 0.008,
+ "m_shell": 0.287,
+ "m_mix2_10_s4": 1.0,
+ "m_corr40_r0.95": 0.88
+}

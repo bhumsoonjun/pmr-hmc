@@ -1,0 +1,42 @@
+{
+ "m_horse15": {
+  "pool": {
+   "n_driven": 3,
+   "max_abs_gam": 0.33937963696962853,
+   "max_abs_eps": 0.3749999999999999,
+   "delta_range": [
+    0.4375,
+    1.1875000000000002
+   ]
+  },
+  "reference": {
+   "n_driven": 0,
+   "max_abs_gam": 0.0,
+   "max_abs_eps": 0.3703703703703703,
+   "delta_range": [
+    0.6296296296296298,
+    1.3703703703703702
+   ]
+  }
+ },
+ "m_skew_a6": {
+  "pool": {
+   "n_driven": 0,
+   "max_abs_gam": 0.0,
+   "max_abs_eps": 0.3749999999999999,
+   "delta_range": [
+    0.8125,
+    1.0
+   ]
+  },
+  "reference": {
+   "n_driven": 0,
+   "max_abs_gam": 0.0,
+   "max_abs_eps": 0.7407407407407406,
+   "delta_range": [
+    1.0,
+    1.1851851851851853
+   ]
+  }
+ }
+}

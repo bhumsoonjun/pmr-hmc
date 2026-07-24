@@ -162,9 +162,116 @@ def write_pdb_top(path="paper/pdb_top.tex"):
     open(path, "w").write("\n".join(lines) + "\n")
 
 
+def _cell(rate, me, ve, best):
+    if rate is None or not np.isfinite(rate):
+        return "--"
+    v = f"{rate:.1f}"
+    flag = "" if gate_ok(me, ve) else "$^{*}$"
+    return (f"\\textbf{{{v}}}{flag}" if best else f"{v}{flag}")
+
+
+def write_pdb_top_full(P, path="paper/pdb_top.tex"):
+    """Representative posteriordb rows with ALL ten methods as columns
+    (same star/bold rules as the appendix panels; ends with \\bottomrule
+    because \\input inside a tabular breaks before a trailing rule)."""
+    new = {}
+    for r in rows_of("pdb2r_shard*.json"):
+        if "ess_ku" in r:
+            new.setdefault(r["target"], []).append(r)
+    oldn = {}
+    for r in rows_of("pdb2_results.json"):
+        if "ess_ku" in r:
+            oldn.setdefault((r["target"], r["sampler"]), []).append(r["ess_ku"])
+    ratio = {t: med([x["ess_ku"] for x in rs]) / max(med(oldn.get((t, "nuts"), [])), 1e-9)
+             for t, rs in new.items()}
+    order = sorted(ratio, key=lambda t: -ratio[t])
+    keep = ("pdb_gauss_mix", "pdb_gp_regr", "pdb_kid_hs", "pdb_es_nc",
+            "pdb_earn_h", "pdb_kilpis")
+    pick = order[:8] + [t for t in order if t in keep and t not in order[:8]]
+    dd = {}
+    for r in rows_of("pdb_panel_shard*.json"):
+        if "d" in r:
+            dd[r["target"]] = r["d"]
+    lines = []
+    for t in pick:
+        cells = P["pdb"][t]
+        best, br = None, -1.0
+        for m in METHODS:
+            r_ = cells.get(m)
+            if r_ and np.isfinite(r_[0]) and gate_ok(r_[1], r_[2]) and r_[0] > br:
+                best, br = m, r_[0]
+        row = [t[4:].replace("_", chr(92) + "_"), str(dd.get(t, 0))]
+        for m in METHODS:
+            r_ = cells.get(m)
+            row.append(_cell(r_[0], r_[1], r_[2], m == best) if r_ else "--")
+        lines.append(" & ".join(row) + "\\\\")
+    lines.append("\\bottomrule")
+    open(path, "w").write("\n".join(lines) + "\n")
+
+
+def write_decomp_full(path="paper/decomp_full.tex"):
+    """Ablation targets with the PMR reduced kernels AND all nine
+    baselines: ablation + NUTS from decomp8 (8 seeds); dense-NUTS/ChEES
+    from the SOTA battery, MCLMC from its rerun, the five learned methods
+    from the SOTA2 battery (4 seeds each)."""
+    cells = {}  # (target, col) -> (rate, me, ve)
+
+    def put(t, c, triples):
+        ok = [x for x in triples if x and x[0] is not None and not isinstance(x[0], str)]
+        if ok:
+            cells[(t, c)] = tuple(med([x[i] for x in ok]) for i in range(3))
+
+    dec = {}
+    for r in rows_of("decomp8_shard*.json"):
+        if "ess_ku" in r:
+            dec.setdefault((r["target"], r["mode"]), []).append(
+                (r["ess_ku"], r.get("me"), r.get("ve")))
+    TGTS = ["banana20", "funnel10", "mixture2", "ring20"]
+    for t in TGTS:
+        for mode, col in (("full", "full"), ("zero_force", "zero"),
+                          ("global_only", "glob"), ("nuts", "nuts")):
+            put(t, col, dec.get((t, mode), []))
+    sota = {}
+    for r in rows_of("sota_results.json"):
+        for k, col in (("nuts_dense", "dense"), ("chees", "chees")):
+            if k in r:
+                sota.setdefault((r["target"], col), []).append(r[k])
+    for r in rows_of("mclmc_results.json"):
+        if "mclmc" in r:
+            sota.setdefault((r["target"], "mclmc"), []).append(r["mclmc"])
+    for (t, c), v in sota.items():
+        if t in TGTS:
+            put(t, c, v)
+    s2 = {}
+    for r in rows_of("sota2_shard*.json"):
+        if "ess_ku" in r:
+            s2.setdefault((r["target"], r["method"]), []).append(
+                (r["ess_ku"], r.get("me"), r.get("ve")))
+    for (t, m), v in s2.items():
+        if t in TGTS:
+            put(t, m, v)
+    COLS = ["full", "zero", "glob", "nuts", "dense", "pf_dense", "chees",
+            "mclmc", "tess", "flow_imh", "flowmc", "neutra"]
+    lines = []
+    for t in TGTS:
+        best, br = None, -1.0
+        for c in COLS:
+            r_ = cells.get((t, c))
+            if r_ and np.isfinite(r_[0]) and gate_ok(r_[1], r_[2]) and r_[0] > br:
+                best, br = c, r_[0]
+        row = [t.replace("_", chr(92) + "_")]
+        for c in COLS:
+            r_ = cells.get((t, c))
+            row.append(_cell(r_[0], r_[1], r_[2], c == best) if r_ else "--")
+        lines.append(" & ".join(row) + "\\\\")
+    lines.append("\\bottomrule")
+    open(path, "w").write("\n".join(lines) + "\n")
+
+
 if __name__ == "__main__":
     P = collect()
-    write_pdb_top()
+    write_pdb_top_full(P)   # supersedes write_pdb_top (3-method variant)
+    write_decomp_full()
     md1, tex1, w1, n1 = render(P, "pdb", "posteriordb (37 posteriors, gold-judged, 10 methods)")
     md2, tex2, w2, n2 = render(P, "mega", "mega-30 (controlled families, truth/ref-judged, 10 methods)")
     open("PROPER.md", "w").write(md1 + "\n\n" + md2 + "\n")

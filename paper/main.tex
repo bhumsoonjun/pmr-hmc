@@ -1295,17 +1295,18 @@ reparameterized is the gradient samplers' best case.
 Figure~\ref{fig:pdb} visualizes ratios and accuracy.
 
 \begin{table}[t]
-\caption{Representative posteriordb rows, gold-judged (min-ESS per
-$10^3$ target-oracle units; PMR medians over 8 seeds; ratio $=$
-PMR/diagonal-NUTS and PMR/dense-NUTS; err $=$ max standardized
-mean\,/\,log-variance error versus gold draws; $^\ddagger$excluded from
-the win count as a PMR accuracy failure. Full $37\times10$ panel in
-Appendix~\ref{app:panels}.)}
+\caption{Representative posteriordb rows, gold-judged, with the full
+ten-method panel (min-ESS per $10^3$ target-oracle units;
+PMR/NUTS/dNUTS medians over 8 seeds, other methods over 4; $^{*}$ fails
+the accuracy gate; \textbf{bold} $=$ best among gate-passing methods.
+All 37 rows: Table~\ref{tab:pdbfull}.)}
 \label{tab:pdb}
-\centering\small
-\begin{tabular}{lrrrrll}
+\centering\footnotesize
+\setlength{\tabcolsep}{1.8pt}
+\begin{tabular}{lrrrrrrrrrrr}
 \toprule
-posterior & $d$ & PMR & NUTS & dNUTS & ratio & PMR err\\
+posterior & $d$ & PMR & NUTS & dNUTS & PF-dN & ChEES & MCLMC & TESS
+ & f-IMH & flowMC & NeuTra\\
 \midrule
 \input{pdb_top}
 \end{tabular}
@@ -1404,8 +1405,8 @@ mega-30: 30 controlled targets, truth/reference-judged; 6 mega-30 rows
 (both funnels, the $d{=}60$ hierarchical Gaussian, Rosenbrock, banana
 at extreme bend, $\nu{=}2.5$ Student-$t$) have no gate-passing method.}
 \label{tab:panelsum}
-\centering\footnotesize
-\setlength{\tabcolsep}{3.6pt}
+\centering\scriptsize
+\setlength{\tabcolsep}{2.6pt}
 \begin{tabular}{lrrrrrrrrrr}
 \toprule
  & PMR & NUTS & dNUTS & PF-dN & ChEES & MCLMC & TESS & f-IMH & flowMC & NeuTra\\
@@ -1442,26 +1443,31 @@ the cached surrogate contributing its clearest factor on the ring
 ($45\to64$). The funnel row fails the variance gate for \emph{every}
 kernel variant at this budget (as it does for all ten panel methods on
 the stress suite), and is reported for completeness, not claimed as a
-win. An earlier single-seed version of this table overstated the
+win. The nine baseline columns place the ablation in context: on these
+four canonical geometries every baseline fails the gate on the banana,
+the funnel, and the mixture, and the best gate-passing baseline on the
+ring (MCLMC at $3.3$) sits $19\times$ below the full kernel---even the
+\emph{reduced} PMR kernels outperform every baseline wherever either
+passes. An earlier single-seed version of this table overstated the
 surrogate's contribution; these 8-seed medians supersede it.
 
 \begin{table}[t]
-\caption{Decomposition ablations (min-ESS per $10^3$ units; medians
-over 8 seeds; parenthesized $=$ max standardized mean\,/\,log-variance
-error; $^{*}$ fails the accuracy gate---a starred rate is not a valid
-win at any magnitude). The funnel row is gate-failed for every
-variant.}
+\caption{Decomposition ablations with the full baseline panel (min-ESS
+per $10^3$ units; ablation columns and NUTS: medians over 8 seeds;
+other baselines: 4 seeds from the same-target modern-baseline battery;
+$^{*}$ fails the accuracy gate---a starred rate is not a valid win at
+any magnitude; \textbf{bold} $=$ best gate-passing rate in the row).
+The funnel row is gate-failed by every kernel variant \emph{and} every
+baseline.}
 \label{tab:decomp}
-\centering\small
-\begin{tabular}{lrrrr}
+\centering\footnotesize
+\setlength{\tabcolsep}{3.0pt}
+\begin{tabular}{lrrrrrrrrrrrr}
 \toprule
-target & full & zero-force & global-only & NUTS\\
+target & full & zero-f. & glob. & NUTS & dNUTS & PF-dN & ChEES & MCLMC
+ & TESS & f-IMH & flowMC & NeuTra\\
 \midrule
-banana20 & 46.0 (.05/.09) & \textbf{52.9} (.06/.12) & 19.5$^{*}$ (.28/1.5) & 0.5$^{*}$ (.24/.88)\\
-funnel10 & 2.3$^{*}$ (.06/1.6) & 6.8$^{*}$ (.08/1.5) & 0.6$^{*}$ (.24/2.4) & 0.1$^{*}$ (.41/1.3)\\
-mixture2 & 43.2 (.03/.04) & 65.9 (.03/.04) & \textbf{497.0} (.03/.03) & 61.1$^{*}$ (.65/3.4)\\
-ring20 & \textbf{63.7} (.05/.07) & 45.4 (.06/.09) & 0.4$^{*}$ (.56/.64) & 2.1 (.04/.12)\\
-\bottomrule
+\input{decomp_full}
 \end{tabular}
 \end{table}
 
